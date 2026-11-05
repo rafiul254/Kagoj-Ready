@@ -18,6 +18,7 @@ Kagoj Ready compares an applicant's documents _before_ the application journey b
 
 > [!IMPORTANT]
 > **Honest status:** live model accuracy is **unmeasured** (the evaluation harness reports only what it actually ran), and the official requirement entries in the registry stay **unverified placeholders** until a human checks them against government sources. The synthetic SAMPLE journey demonstrates the complete product without any personal document.
+> - Live document reading uses free-tier vision models; accuracy varies with photo quality, and no accuracy figure is claimed. Every field is confirmed by the user before comparison.
 
 </div>
 
@@ -34,7 +35,7 @@ Kagoj Ready compares an applicant's documents _before_ the application journey b
 | ✅ **Deterministic comparison, not model vibes** | Unicode normalization, Bangla digit conversion, honorific handling, Jaro-Winkler/Levenshtein and token comparisons — **code, not an LLM**, decides match severity.                                                    |
 | 🔒 **Privacy-first architecture**                | No accounts, no case database, no server persistence of images or fields; memory-only images; masked ID numbers; one-click "Delete my data".                                                                          |
 | 🇧🇩 **Bangla-first Papery design**                | Newsroom-minimalism: warm ivory paper, near-black ink, Noto Serif Bengali headlines, restrained vermilion accent, muted forest green reserved for verified/success semantics.                                         |
-| 🧪 **139 automated tests**                       | 133 unit tests across 11 Vitest files + 6 E2E scenarios (Playwright, including an axe accessibility scan) guarding the full journey.                                                                                  |
+| 🧪 **142 automated tests**                       | 136 unit tests across 11 Vitest files + 6 E2E scenarios (Playwright, including an axe accessibility scan) guarding the full journey.                                                                                  |
 
 ## 🧠 Honest AI by design
 
