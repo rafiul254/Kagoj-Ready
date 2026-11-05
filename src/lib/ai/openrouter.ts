@@ -129,7 +129,11 @@ export class OpenRouterProvider implements ExtractionProvider {
       primary,
       ...this.fallbackPool().filter((model) => model !== primary),
     ];
-    const deadline = AbortSignal.timeout(this.config.MODEL_TIMEOUT_MS);
+    // One attempt gets MODEL_TIMEOUT_MS; the whole chain gets up to twice that
+    // (capped) so a stuck first model cannot starve the fallbacks.
+    const deadline = AbortSignal.timeout(
+      Math.min(this.config.MODEL_TIMEOUT_MS * 2, 40000),
+    );
     const attemptSignal = AbortSignal.any([
       deadline,
       ...(signal ? [signal] : []),
@@ -193,6 +197,9 @@ export class OpenRouterProvider implements ExtractionProvider {
           temperature: 0,
           max_tokens: this.config.MODEL_MAX_OUTPUT_TOKENS,
           response_format: { type: "json_object" },
+          // Reasoning models otherwise spend max_tokens on hidden thinking and
+          // return empty content (finish_reason=length). Ask for no reasoning.
+          reasoning: { enabled: false },
           messages,
         }),
       });

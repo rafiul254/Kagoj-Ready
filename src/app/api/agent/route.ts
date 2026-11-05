@@ -21,7 +21,7 @@ export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 const inputSchema = z
   .object({
-    caseId: z.uuid(),
+    caseId: z.string().min(1).max(200),
     documentId: z.string().regex(/^doc-[123]$/),
     language: languageSchema,
     context: contextSchema,

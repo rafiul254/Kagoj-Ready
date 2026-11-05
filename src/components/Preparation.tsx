@@ -81,7 +81,9 @@ async function createCase(signal: AbortSignal): Promise<string> {
     cache: "no-store",
   });
   const body: unknown = await response.json().catch(() => null);
-  const parsed = z.object({ caseId: z.uuid() }).safeParse(body);
+  const parsed = z
+    .object({ caseId: z.string().min(1).max(200) })
+    .safeParse(body);
   if (parsed.success) return parsed.data.caseId;
   const code = errorSchema.safeParse(body);
   throw new SafeError(code.success ? code.data.error : "PROVIDER_UNAVAILABLE");

@@ -1,4 +1,9 @@
-import { randomUUID } from "node:crypto";
+import {
+  createHash,
+  createHmac,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 import { z } from "zod";
 import { SafeError } from "../errors";
 import { hasSharedStore, storeCommand } from "../shared-store";
@@ -90,10 +95,62 @@ export async function createCaseBudget() {
   for (const [key, b] of budgets)
     if (b.expiresAt < Date.now()) budgets.delete(key);
   if (budgets.size >= 10000) throw new SafeError("REQUEST_LIMIT");
-  budgets.set(id, new CaseBudget());
-  return id;
+  // Serverless instances do not share memory, so the case id is a SIGNED
+  // token: any instance can verify it without a shared store. Without Redis
+  // the step/token counters are per instance (best effort); set the Upstash
+  // variables for exact cross-instance accounting.
+  const expiresAt = Date.now() + 3600000;
+  const token = signCase(id, expiresAt);
+  const budget = new CaseBudget();
+  budget.expiresAt = expiresAt;
+  budgets.set(token, budget);
+  return token;
+}
+function caseSecret() {
+  return (
+    process.env.CASE_SIGNING_SECRET ||
+    createHash("sha256")
+      .update(
+        "kagoj-case:" +
+          (process.env.OPENROUTER_API_KEY ||
+            process.env.GEMINI_API_KEY ||
+            process.env.GROQ_API_KEY ||
+            "local-development"),
+      )
+      .digest("hex")
+  );
+}
+function signCase(id: string, expiresAt: number) {
+  const sig = createHmac("sha256", caseSecret())
+    .update(`${id}.${expiresAt}`)
+    .digest("base64url")
+    .slice(0, 32);
+  return `${id}.${expiresAt}.${sig}`;
+}
+function verifyCase(token: string): number | null {
+  const [id, exp, sig, extra] = token.split(".");
+  if (extra !== undefined || !id || !exp || !sig) return null;
+  if (!z.uuid().safeParse(id).success || !/^\d{10,15}$/.test(exp)) return null;
+  const expected = signCase(id, Number(exp)).split(".")[2];
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+  return Number(exp) < Date.now() ? null : Number(exp);
 }
 export async function getCaseBudget(id: string) {
+  if (typeof id !== "string" || id.length > 200)
+    throw new SafeError("INVALID_REQUEST");
+  if (!hasSharedStore()) {
+    const exp = verifyCase(id);
+    if (exp === null) throw new SafeError("INVALID_REQUEST");
+    let known = budgets.get(id);
+    if (!known) {
+      known = new CaseBudget();
+      known.expiresAt = exp;
+      budgets.set(id, known);
+    }
+    return known;
+  }
   if (!z.uuid().safeParse(id).success) throw new SafeError("INVALID_REQUEST");
   if (hasSharedStore()) {
     const values = z
