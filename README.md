@@ -3,7 +3,7 @@
 <img src="docs/banner.png" alt="Kagoj Ready — Know Before You Go" width="100%" />
 
 [![version](https://img.shields.io/badge/version-0.3.0-1F2A44?style=flat-square)](package.json)
-[![tests](https://img.shields.io/badge/tests-133%20unit%20%2B%206%20E2E-2E9E7E?style=flat-square&logo=vitest&logoColor=white)](#-verification)
+[![tests](https://img.shields.io/badge/tests-138%20unit%20%2B%206%20E2E-2E9E7E?style=flat-square&logo=vitest&logoColor=white)](#-verification)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0-3178C6?style=flat-square&logo=typescript&logoColor=white)](#)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](#)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](#)
@@ -16,10 +16,9 @@
 
 Kagoj Ready compares an applicant's documents _before_ the application journey begins — and shows exactly what would go wrong. It is not a chatbot, government portal, legal adviser, identity authority, or approval predictor.
 
-> [!IMPORTANT]
-> **Honest status:** live model accuracy is **unmeasured** (the evaluation harness reports only what it actually ran), and the official requirement entries in the registry stay **unverified placeholders** until a human checks them against government sources. The synthetic SAMPLE journey demonstrates the complete product without any personal document.
-> - Live document reading uses free-tier vision models; accuracy varies with photo quality, and no accuracy figure is claimed. Every field is confirmed by the user before comparison.
-
+-[IMPORTANT]
+> **Honest status:** live reading uses free-tier vision models through OpenRouter and can misread Bangla text, which is why the applicant confirms every field before anything is compared. Live model accuracy is **unmeasured** (the evaluation harness reports only what it actually ran), and the official requirement entries in the registry stay **unverified placeholders** until a human checks them against government sources. The synthetic SAMPLE journey demonstrates the complete product without any personal document.
+>  Live document reading uses free-tier vision models; accuracy varies with photo quality, and no accuracy figure is claimed. Every field is confirmed by the user before comparison.
 </div>
 
 **Contents:** [Highlights](#-highlights) · [Honest AI](#-honest-ai-by-design) · [Screenshots](#-screenshots) · [Run locally](#-run-locally) · [Verification](#-verification) · [Deploy](#%EF%B8%8F-vercel-deployment) · [Troubleshooting](#-troubleshooting-local-runs) · [Docs](#-project-documentation)
@@ -35,7 +34,7 @@ Kagoj Ready compares an applicant's documents _before_ the application journey b
 | ✅ **Deterministic comparison, not model vibes** | Unicode normalization, Bangla digit conversion, honorific handling, Jaro-Winkler/Levenshtein and token comparisons — **code, not an LLM**, decides match severity.                                                    |
 | 🔒 **Privacy-first architecture**                | No accounts, no case database, no server persistence of images or fields; memory-only images; masked ID numbers; one-click "Delete my data".                                                                          |
 | 🇧🇩 **Bangla-first Papery design**                | Newsroom-minimalism: warm ivory paper, near-black ink, Noto Serif Bengali headlines, restrained vermilion accent, muted forest green reserved for verified/success semantics.                                         |
-| 🧪 **142 automated tests**                       | 136 unit tests across 11 Vitest files + 6 E2E scenarios (Playwright, including an axe accessibility scan) guarding the full journey.                                                                                  |
+| 🧪 **144 automated tests**                       | 138 unit tests across 13 Vitest files + 6 E2E scenarios (Playwright, including an axe accessibility scan) guarding the full journey.                                                                                  |
 
 ## 🧠 Honest AI by design
 
@@ -94,6 +93,13 @@ See `src/lib/agent/machine.ts` for state-specific allowlists. `extract.ts`, `rep
 - At most one retry for HTTP 500/502/503/504 on vision operations. No "retry until the answer agrees", and no retry on malformed output/quota/schema failure. Tool-choice errors fail safely without retries.
 - Token accounting is a conservative preflight reservation, **not a currency billing guarantee**. Hosted model reasoning/token semantics still need a live check.
 - Three document slots maximum, one image per document. Replacing a slot uses the remaining case budget rather than resetting it.
+
+## ⚠️ Known limitations
+
+- **Reading accuracy varies.** Live extraction runs on free-tier vision models; accuracy depends on photo quality and model availability, and no accuracy figure is claimed. Vision models can misread Bangla text, so every field is confirmed or edited by the applicant before comparison.
+- **Free-tier capacity.** Free models are rate-limited and can be busy. The provider walks a pool of models; if all are unavailable the user sees a clear message and can use the synthetic SAMPLE journey.
+- **Requirements are unverified.** The registry entries stay placeholders until a human checks them against official government sources.
+- **Narrow scope.** First-time adult e-Passport applicants applying from Bangladesh. No approval prediction, readiness score or legal determination is provided.
 
 ## 📸 Screenshots
 
@@ -162,21 +168,23 @@ npm run start
 
 ### Automated test inventory
 
-| Suite                |   Tests | What it guards                                                                         |
-| -------------------- | ------: | -------------------------------------------------------------------------------------- |
-| `schemas.test.ts`    |      21 | Zod schemas and sanity checks (dates, lengths, allowed values)                         |
-| `security.test.ts`   |      20 | CSP and headers, upload validation, IP handling, error scrubbing                       |
-| `domain.test.ts`     |      18 | Normalization, Bangla digits, name and date comparison, severity                       |
-| `pipeline.test.ts`   |      18 | Extraction → confirmation → comparison → checklist pipeline                            |
-| `gemini.test.ts`     |      13 | Gemini structured output, function calls, `countTokens` regression                     |
-| `http.test.ts`       |       8 | Same-origin guard, bounded bodies, safe responses                                      |
-| `json.test.ts`       |       8 | Salvaging fenced or prose-wrapped model JSON                                           |
-| `openrouter.test.ts` |       8 | Free-model pool walking on 429 or invalid output                                       |
-| `agent.test.ts`      |       7 | Bounded state machine, tool allowlists, step budget                                    |
-| `chain.test.ts`      |       7 | Gemini → Groq → OpenRouter fallback, honest labelling                                  |
-| `route.test.ts`      |       5 | API routes, budgets, rate limits                                                       |
-| **Unit total**       | **133** | `npm test`                                                                             |
-| Playwright E2E       |       6 | Full journey, re-plan diff, unsupported case, mobile, fallback, axe accessibility scan |
+| Suite                    |   Tests | What it guards                                                                         |
+| ------------------------ | ------: | -------------------------------------------------------------------------------------- |
+| `schemas.test.ts`        |      21 | Zod schemas and sanity checks (dates, lengths, allowed values)                         |
+| `security.test.ts`       |      20 | CSP and headers, upload validation, IP handling, error scrubbing                       |
+| `domain.test.ts`         |      18 | Normalization, Bangla digits, name and date comparison, severity                       |
+| `pipeline.test.ts`       |      18 | Extraction → confirmation → comparison → checklist pipeline                            |
+| `gemini.test.ts`         |      13 | Gemini structured output, function calls, `countTokens` regression                     |
+| `http.test.ts`           |       8 | Same-origin guard, bounded bodies, safe responses                                      |
+| `json.test.ts`           |       8 | Salvaging fenced or prose-wrapped model JSON                                           |
+| `openrouter.test.ts`     |       8 | Free-model pool walking on 429 or invalid output                                       |
+| `agent.test.ts`          |       7 | Bounded state machine, tool allowlists, step budget                                    |
+| `chain.test.ts`          |       7 | Gemini → Groq → OpenRouter fallback, honest labelling                                  |
+| `route.test.ts`          |       5 | API routes, budgets, rate limits                                                       |
+| `json-normalize.test.ts` |       3 | Tolerant parsing of near-miss model JSON, still strictly validated                     |
+| `case-token.test.ts`     |       2 | Signed, serverless-safe case tokens; forged or tampered tokens rejected                |
+| **Unit total**           | **138** | `npm test`                                                                             |
+| Playwright E2E           |       6 | Full journey, re-plan diff, unsupported case, mobile, fallback, axe accessibility scan |
 
 Browser tests cover the real sample route and confirmation/re-plan/report journey, a separately mocked provider smoke test, unsupported context, mobile layout, honest fallback, download, print and deletion. Transport mocks test Gemini JSON/function-call handling. These tests **do not establish live model performance**.
 
@@ -200,8 +208,8 @@ Browser tests cover the real sample route and confirmation/re-plan/report journe
 `vercel.json` configures a single Next.js deployment and bounded route durations. No deployment was performed: no authenticated Vercel access/token was supplied, and the conversation's Vercel connector is unsupported.
 
 1. Import this repository into your Vercel account (or run `npx vercel` and authenticate locally).
-2. Set `GEMINI_API_KEY`, `GEMINI_MODEL`, shared-store settings, a strong `RATE_LIMIT_SALT`, and desired request limits in server environment variables.
-3. Keep `ALLOW_IN_MEMORY_LIMITS=false`. Set `RULE_STALE_DAYS` before the build.
+2. Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` (for example `nvidia/nemotron-3.5-super-vl:free`) in server environment variables. `GEMINI_API_KEY` and `GROQ_API_KEY` are optional and should be left unset if unused. Add a strong `RATE_LIMIT_SALT` and desired request limits.
+3. For a public demo without Redis, set `ALLOW_IN_MEMORY_LIMITS=true` (weaker, per-instance limits); with Upstash configured, keep it `false`. Set `RULE_STALE_DAYS` before the build.
 4. Deploy; Vercel detects `bun.lock` and installs with bun, then runs `npm run build`.
 5. Run the synthetic scenario on that domain; verify live labels, source badges, schema behavior, mobile camera file selection, API timeouts, shared caps, print and deletion.
 6. Run live evaluation, review evidence and update the registry only after human source verification.
@@ -212,7 +220,7 @@ The 4 MiB single-image limit leaves multipart headroom under typical platform re
 
 With `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`, atomic Lua operations enforce shared per-IP/minute limits, a global UTC-day request cap, and per-case generation/token reservations. Redis holds **only hashed IP keys, opaque IDs, counters and expiry metadata**, never documents/fields. Case budgets expire after one hour; rate keys expire automatically.
 
-Without a shared store, local in-memory controls are **per process** and daily/rate limits reset across instances. Unknown case IDs fail closed; they do not silently restart a live budget. IP trust depends on a correctly configured hosting proxy; do not expose a spoofable direct origin in production. On Vercel, live model processing **fails closed without shared limits by default** — `ALLOW_IN_MEMORY_LIMITS=true` explicitly accepts the weaker behavior and is not recommended for public use. The shared-store adapter is implemented but cannot be claimed live-verified without an actual store credential/integration run.
+Without a shared store, local in-memory controls are **per process** and daily/rate limits reset across instances. Case IDs are signed, stateless tokens (HMAC, one-hour expiry), so any serverless instance can verify them; forged or expired IDs fail closed. Without Redis the step and token counters are per instance (best effort). IP trust depends on a correctly configured hosting proxy; do not expose a spoofable direct origin in production. On Vercel, live model processing **fails closed without shared limits by default** — `ALLOW_IN_MEMORY_LIMITS=true` explicitly accepts the weaker behavior and is not recommended for public use. The shared-store adapter is implemented but cannot be claimed live-verified without an actual store credential/integration run.
 
 ## 🛠 Troubleshooting local runs
 
@@ -236,8 +244,7 @@ Without a shared store, local in-memory controls are **per process** and daily/r
 
 | Document                                     | Contents                                                                                           |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [Matching rules](docs/matching-rules.md)     | Unicode normalization, Bangla digits, date parsing, Jaro-Winkler/Levenshtein and token comparisons |
-| [Demo script](docs/demo-script.md)           | Two-minute guided demo for judges                                                                  |
+| [Matching rules](docs/matching-rules.md)     | Unicode normalization, Bangla digits, date parsing, Jaro-Winkler/Levenshtein and token comparisons |                                                                |
 | [Gemini SDK notes](docs/gemini-sdk-notes.md) | SDK integration notes and model selection                                                          |
 
 ## 🏛 Buildathon assets
@@ -304,13 +311,29 @@ Exit codes: 0 completed, 2 blocked/partial failure, 1 setup/integrity failure. A
 
 ## 🚧 Remaining owner inputs / release gates
 
-1. Privately configured Gemini API key and supported model; live extraction/function-calling evaluation.
+1. A privately configured provider key (OpenRouter by default) and a supported vision model; a measured live extraction evaluation.
 2. Human verification of actual requirements; no source rules are verified by this build.
 3. Authenticated Vercel deployment access and shared-store configuration/integration check.
-4. Presenter name/background and confirmation of the assumed Bangladesh timezone for the owner-provided deadline.
-5. Manual camera/device and accessibility review. Automated smoke checks are not a full accessibility certification.
+4. Manual camera/device and accessibility review. Automated smoke checks are not a full accessibility certification.
 
 NID correction, submission, legal record updates, legal determinations, requirements chatbot and PDF-generation library are intentionally not implemented. The browser's print dialog can save the complete report as PDF. No application approval or readiness score is shown.
+
+## 👤 Author
+
+**Rafiul Islam**, solo builder of Kagoj Ready.
+
+- B.Sc. in IoT and Robotics Engineering, University of Frontier Technology, Bangladesh.
+- Creator of [PinToCloud](https://www.youtube.com/@PinToCloud), a YouTube channel of IoT and AI project tutorials.
+
+
+|              |                                                                                    |
+| ------------ | ---------------------------------------------------------------------------------- |
+| 🌐 Portfolio | [portfolio-website-rafiul.vercel.app](https://portfolio-website-rafiul.vercel.app) |
+| 💻 GitHub    | [@rafiul254](https://github.com/rafiul254)                                         |
+| ▶️ YouTube   | [@PinToCloud](https://www.youtube.com/@PinToCloud)                                 |
+| ✍️ Medium    | [@rafiulislam25](https://medium.com/@rafiulislam25)                                |
+
+Designed, built and verified by one person for a solo buildathon, with AI-assisted engineering. Feedback and issues are welcome through GitHub.
 
 ---
 
