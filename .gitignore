@@ -1,0 +1,45 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets - never commit (only the template is tracked)
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Test outputs
+test-results/
+playwright-report/
+blob-report/
+
+# Logs and OS/editor files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# AI-agent and internal working notes (not needed to run or judge the app)
+.claude/
+.cursor/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+docs/deck-outline.md
+docs/delivery-status.md
+docs/next-steps.bn.md
+docs/phase-1-gate.md
+
+# Dev-only tooling
+Caddyfile
+scripts/papery-sweep.py
+scripts/process-brand-assets.py
+*.zip
+*.tgz

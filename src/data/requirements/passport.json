@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "stalenessPolicy": {
+    "maxAgeDays": 90,
+    "envOverride": "RULE_STALE_DAYS",
+    "basis": "verifiedAt",
+    "missingDateIsStale": true
+  },
+  "rules": [
+    {
+      "id": "passport-adult-first-bd-placeholder",
+      "service": "adult_first_time_epassport",
+      "ruleTitle_bn": "সরকারি নির্দেশনা যাচাই বাকি",
+      "ruleTitle_en": "Official instructions awaiting verification",
+      "ruleText_bn": "এই এন্ট্রিতে কোনো নিশ্চিত প্রয়োজনীয়তা নেই। সরকারি উৎস থেকে নিয়ম যাচাই করতে হবে।",
+      "ruleText_en": "This entry states no confirmed requirement. Rules must be verified against the official source.",
+      "appliesWhen": {
+        "ageBand": "20_plus",
+        "applicationType": "first_time",
+        "location": "bangladesh"
+      },
+      "requiredDocuments": [],
+      "recommendedNextSteps": [],
+      "sourceTitle": "Bangladesh e-Passport instructions (starting source; not yet reviewed)",
+      "sourceUrl": "https://www.epassport.gov.bd/instructions/instructions",
+      "sourcePublishedAt": null,
+      "verifiedAt": null,
+      "verificationStatus": "unverified",
+      "notes": "Placeholder only. No source content fetched or legal requirement asserted. Only the owner may mark a rule verified. Additional starting source: https://www.epassport.gov.bd/landing/notices/34"
+    },
+    {
+      "id": "passport-adult-first-bd-notice-placeholder",
+      "service": "adult_first_time_epassport",
+      "ruleTitle_bn": "সরকারি বিজ্ঞপ্তি যাচাই বাকি",
+      "ruleTitle_en": "Official notice awaiting verification",
+      "ruleText_bn": "এই এন্ট্রিতে কোনো নিশ্চিত প্রয়োজনীয়তা নেই। সরকারি উৎস থেকে নিয়ম যাচাই করতে হবে।",
+      "ruleText_en": "This entry states no confirmed requirement. Rules must be verified against the official source.",
+      "appliesWhen": {
+        "ageBand": "20_plus",
+        "applicationType": "first_time",
+        "location": "bangladesh"
+      },
+      "requiredDocuments": [],
+      "recommendedNextSteps": [],
+      "sourceTitle": "Bangladesh e-Passport notice 34 (starting source; not yet reviewed)",
+      "sourceUrl": "https://www.epassport.gov.bd/landing/notices/34",
+      "sourcePublishedAt": null,
+      "verifiedAt": null,
+      "verificationStatus": "unverified",
+      "notes": "Placeholder only. No source content fetched or legal requirement asserted. Only the owner may mark a rule verified. Additional starting source: https://www.epassport.gov.bd/landing/notices/34"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-13T22:40:24.124Z",
+  "mode": "mock_test",
+  "status": "completed",
+  "model": null,
+  "datasetVersion": 1,
+  "datasetHash": "5107b63f4f5cdd985f6e771c1ca6ca1393be7e667362b7575a5f3e4174f2c8f7",
+  "attempted": 8,
+  "completed": 8,
+  "failures": [],
+  "metrics": {
+    "presentFields": {
+      "correct": 47,
+      "total": 47,
+      "accuracy": 1
+    },
+    "banglaText": {
+      "correct": 7,
+      "total": 7,
+      "accuracy": 1
+    },
+    "englishText": {
+      "correct": 22,
+      "total": 22,
+      "accuracy": 1
+    },
+    "missingFields": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1
+    },
+    "rejections": {
+      "correct": 8,
+      "total": 8,
+      "accuracy": 1
+    }
+  },
+  "conflictDetection": {
+    "status": "measured",
+    "precision": 1,
+    "recall": 1,
+    "truePositives": 2,
+    "falsePositives": 0,
+    "falseNegatives": 0,
+    "testedComparisons": 7,
+    "totalComparisons": 7,
+    "exactStatusMatches": 7
+  },
+  "limitations": [
+    "Eight synthetic diagnostic cards, not authentic government templates. No real-world accuracy claim.",
+    "Strict NFC exact field match; whitespace differences count as OCR errors. Dates and IDs excluded from language-specific text groups.",
+    "Failed readable documents count against every expected field; missing-field correctness is reported separately.",
+    "Blurred and wrong-document cards are scored for identification/rejection, not field extraction.",
+    "Confidence is model-reported, not calibrated probability. Extractions have not been human-confirmed.",
+    "MOCK TEST: values supplied from ground truth; metrics verify plumbing only, NOT Gemini accuracy.",
+    "Conflict metrics compare raw extraction outputs after automated evaluation-only acknowledgement, not real user confirmation. Missing readable runs count as false negatives for expected conflicts."
+  ]
+}

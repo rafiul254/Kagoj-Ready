@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "description": "Eight diagnostic cards; fictional names, explicit SAMPLE watermark. Not government document templates. Baseline versus format provides exact matches and format-only differences in the same pair.",
+  "context": {
+    "ageBand": "20_plus",
+    "applicationType": "first_time",
+    "location": "bangladesh"
+  },
+  "fixtures": [
+    {
+      "id": "baseline",
+      "file": "/samples/baseline.png",
+      "title": "Baseline / exact fields",
+      "documentType": "nid",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": "Kalpo Jonaki",
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "0153926b4677d3c2943cef366129212bb32d9493e64be28eeeba415a0ced53ab"
+    },
+    {
+      "id": "format",
+      "file": "/samples/format.png",
+      "title": "Exact + format-only pair",
+      "documentType": "birth_certificate",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna   Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": "Kalpo Jonaki",
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane , Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "67841006743a45935159e0be37b6b498a6d8241bcdc600701dbba42dc773b996"
+    },
+    {
+      "id": "variant",
+      "file": "/samples/variant.png",
+      "title": "Bangla–English parent-name variant",
+      "documentType": "birth_certificate",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "কল্প নিলয়",
+        "mother_name": "Kalpo Jonaki",
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "ed5bee876d9532accf3b9fb2e8e16ee4bb423e4bc84875658c3b582a9ff96afb"
+    },
+    {
+      "id": "parent",
+      "file": "/samples/parent.png",
+      "title": "Parent-name conflict",
+      "documentType": "birth_certificate",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": "Kalpo Tara",
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "ab770dfd6e9cf79e1a767934ecd527d8af930dd7d8858612e030fbdbfcdb5ea5"
+    },
+    {
+      "id": "dob",
+      "file": "/samples/dob.png",
+      "title": "Date-of-birth conflict",
+      "documentType": "birth_certificate",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": "Kalpo Jonaki",
+        "date_of_birth": "1999-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "fbfbbc8abf658f37d3b7f12393d95052abeab39165389237a712e67d55494d1b"
+    },
+    {
+      "id": "missing",
+      "file": "/samples/missing.png",
+      "title": "Missing mother’s name",
+      "documentType": "birth_certificate",
+      "expectedRejection": null,
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": null,
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "e159fb4319950ca8f020b35aef8fb2ca7a2ebdd4658efe7dd6593147ba41cb47"
+    },
+    {
+      "id": "blurry",
+      "file": "/samples/blurry.png",
+      "title": "Unreadable image",
+      "documentType": "nid",
+      "expectedRejection": "blurry",
+      "fields": {
+        "name_bn": "নমুনা মেঘলা",
+        "name_en": "Namuna Meghla",
+        "father_name": "Kalpo Niloy",
+        "mother_name": "Kalpo Jonaki",
+        "date_of_birth": "1998-04-12",
+        "id_number": "SAMPLE-000001",
+        "address": "12 Fiction Lane, Sample Town",
+        "issue_date": "2022-01-15"
+      },
+      "sha256": "204e0b08ac000205387b431c710b04fda0d4801a1c9a3f360d3c4fe072fb7f4d"
+    },
+    {
+      "id": "wrong",
+      "file": "/samples/wrong.png",
+      "title": "Wrong document",
+      "documentType": "other",
+      "expectedRejection": "wrong_document",
+      "fields": {
+        "name_bn": null,
+        "name_en": null,
+        "father_name": null,
+        "mother_name": null,
+        "date_of_birth": null,
+        "id_number": null,
+        "address": null,
+        "issue_date": null
+      },
+      "sha256": "1e21c691021d3f75e8d03bc7a1006f322773c895518eba3dbfc3281a7a022d61"
+    }
+  ],
+  "conflicts": [
+    {
+      "left": "baseline",
+      "right": "format",
+      "field": "name_bn",
+      "expected": "match"
+    },
+    {
+      "left": "baseline",
+      "right": "format",
+      "field": "name_en",
+      "expected": "format_difference"
+    },
+    {
+      "left": "baseline",
+      "right": "format",
+      "field": "address",
+      "expected": "format_difference"
+    },
+    {
+      "left": "baseline",
+      "right": "variant",
+      "field": "father_name",
+      "expected": "possible_variation"
+    },
+    {
+      "left": "baseline",
+      "right": "parent",
+      "field": "mother_name",
+      "expected": "possible_discrepancy"
+    },
+    {
+      "left": "baseline",
+      "right": "dob",
+      "field": "date_of_birth",
+      "expected": "possible_discrepancy"
+    },
+    {
+      "left": "baseline",
+      "right": "missing",
+      "field": "mother_name",
+      "expected": "missing"
+    }
+  ]
+}
